@@ -1,6 +1,11 @@
 context("Bootr integration")
 suppressPackageStartupMessages(library(dplyr))
 
+test_that("Reject bad inputs", {
+  expect_error(bootr(df = NULL))
+  expect_error(bootr(mtcars, group_vars = "foo"))
+})
+
 test_that("Bootstrap calculated correctly", {
 
   m <- 10
@@ -17,7 +22,7 @@ test_that("Bootstrap calculated correctly", {
 
   set.seed(100)
   pkg_boot_single <- mtcars %>%
-    bootr(m = m, group_vars = "gear", source_var = "mpg", boot_fun = boot_mean)
+    bootr(m = m, group_vars = "gear", source_var = "mpg", boot_fun = mean)
 
   expect_equivalent(man_boot_single, pkg_boot_single)
 
@@ -33,8 +38,7 @@ test_that("Bootstrap calculated correctly", {
 
   set.seed(100)
   pkg_boot_multi <- mtcars %>%
-    bootr(m = m, group_vars = c("gear", "carb"), source_var = "mpg", boot_fun = boot_mean)
+    bootr(m = m, group_vars = c("gear", "carb"), source_var = "mpg", boot_fun = mean)
 
   expect_equivalent(man_boot_multi, pkg_boot_multi)
 })
-
